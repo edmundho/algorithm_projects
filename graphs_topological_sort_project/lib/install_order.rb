@@ -7,8 +7,26 @@
 
 # Import any files you need to
 
-
+require_relative 'graph'
+require_relative 'topological_sort'
 
 def install_order(arr)
+  max = 0
+  independent = []
+  vertices = {}
 
+  arr.each do |tuple|
+    vertices[tuple[0]] = Vertex.new(vertices[tuple[0]]) unless vertices[tuple[0]]
+    vertices[tuple[1]] = Vertex.new(vertices[tuple[1]]) unless vertices[tuple[1]]
+
+    Edge.new(vertices[tuple[1]], vertices[tuple[0]])
+
+    max = tuple.max if tuple.max > max
+  end
+
+  (1..max).each do |i|
+    independent << i unless vertices[i]
+  end
+
+  independent + topological_sort(vertices.values).map { |v| v.value }
 end
